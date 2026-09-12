@@ -1,4 +1,4 @@
-package com.examplemod.mixins;
+package dev.quiteboring.renderlib.mixins;
 
 import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
