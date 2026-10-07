@@ -1,18 +1,17 @@
 plugins {
   alias(libs.plugins.loom)
   `maven-publish`
+  `versioned-catalogues`
 }
 
-val baseGroup = providers.gradleProperty("baseGroup").get()
 val modId = providers.gradleProperty("modId").get()
-val modName = providers.gradleProperty("modName").get()
 val modVersion = providers.gradleProperty("modVersion").get()
 
-version = modVersion
-group = baseGroup
+version = "$modVersion+${sc.current.version}"
+group = providers.gradleProperty("baseGroup").get()
 
 base {
-  archivesName = modName
+  archivesName = modId
 }
 
 publishing {
@@ -25,36 +24,50 @@ publishing {
 
 repositories {
   mavenCentral()
+  maven("https://api.modrinth.com/maven")
   maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 loom {
-  accessWidenerPath = rootProject.file("src/main/resources/${modId}.accesswidener")
+  accessWidenerPath = sc.process(
+    rootProject.file("src/main/resources/renderlib.accesswidener"),
+    "build/processed.accesswidener"
+  )
 }
 
 dependencies {
-  minecraft(libs.minecraft)
-  api(libs.fabric.loader)
+  minecraft(versionedCatalog["minecraft"])
 
-  runtimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
+  implementation(libs.fabric.loader)
+  implementation(versionedCatalog["fabric-api"])
+
+  runtimeOnly(libs.devauth)
 }
 
 tasks {
   processResources {
-    val resourceProperties = mapOf(
-      "fabricLoaderVersion" to libs.versions.fabric.loader.get(),
-      "minecraftVersion" to libs.versions.minecraft.version.get(),
-      "modId" to modId,
-      "modName" to modName,
-      "modVersion" to modVersion,
-      "baseGroup" to baseGroup,
-    )
+    inputs.property("version", project.version)
+    inputs.property("minecraft_version", versionedCatalog.versions["minecraft"])
+    inputs.property("loader_version", libs.versions.fabricLoader.get())
 
-    inputs.properties(resourceProperties)
-
-    filesMatching(listOf("fabric.mod.json", "$modId.mixins.json")) {
-      expand(resourceProperties)
+    filesMatching("fabric.mod.json") {
+      expand(
+        "version" to project.version,
+        "loader_version" to libs.versions.fabricLoader.get(),
+        "minecraft_version" to versionedCatalog.versions["minecraft"],
+      )
     }
+  }
+
+  val jar = project.tasks.named("jar")
+
+  register<Copy>("buildAndCollect") {
+    group = "build"
+    description = "Builds the mod jar and copies it to `build/libs/{mod version}/`"
+
+    inputs.property("version", project.version)
+    from(jar)
+    into(rootProject.layout.buildDirectory.dir("libs/$modVersion"))
   }
 }
 
@@ -63,6 +76,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 java {
+  withSourcesJar()
   sourceCompatibility = JavaVersion.VERSION_25
   targetCompatibility = JavaVersion.VERSION_25
 }

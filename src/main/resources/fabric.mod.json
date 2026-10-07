@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "${modId}",
-  "version": "${modVersion}",
-  "name": "${modName}",
+  "id": "renderlib",
+  "version": "${version}",
+  "name": "RenderLib",
   "description": "2D and 3D rendering libary for Minecraft",
   "authors": ["quiteboring"],
   "contact": {
@@ -22,7 +22,7 @@
   "mixins": ["renderlib.mixins.json"],
   "depends": {
     "java": ">=25",
-    "minecraft": "~${minecraftVersion}",
-    "fabricloader": ">=${fabricLoaderVersion}"
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${loader_version}"
   }
 }

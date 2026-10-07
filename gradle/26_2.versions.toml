@@ -1,0 +1,9 @@
+[versions]
+
+minecraft = "26.2"
+fabricApi = "0.161.0+26.2"
+
+[libraries]
+
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
