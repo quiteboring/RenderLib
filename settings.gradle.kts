@@ -1,6 +1,8 @@
 pluginManagement {
   repositories {
     maven("https://maven.fabricmc.net/")
+    maven("https://maven.kikugie.dev/releases")
+    maven("https://maven.kikugie.dev/snapshots")
     mavenCentral()
     gradlePluginPortal()
   }
@@ -19,4 +21,19 @@ stonecutter {
   }
 }
 
-rootProject.name = providers.gradleProperty("modName").get()
+rootProject.name = "RenderLib"
+
+dependencyResolutionManagement {
+  versionCatalogs {
+    versions.forEach { version ->
+      val versionName = version.replace('.', '_')
+      create("libs${versionName.replace("_", "")}") {
+        from(
+          files(
+            rootProject.projectDir.resolve("gradle/$versionName.versions.toml")
+          )
+        )
+      }
+    }
+  }
+}
