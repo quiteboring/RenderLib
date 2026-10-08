@@ -12,13 +12,7 @@
   "license": "CC0-1.0",
   "icon": "assets/renderlib/icon.png",
   "environment": "*",
-  "entrypoints": {
-    "client": [
-      {
-        "value": "dev.quiteboring.renderlib.Main"
-      }
-    ]
-  },
+  "entrypoints": {},
   "mixins": ["renderlib.mixins.json"],
   "depends": {
     "java": ">=25",

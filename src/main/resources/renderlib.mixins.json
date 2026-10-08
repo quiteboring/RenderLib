@@ -4,10 +4,17 @@
   "package": "dev.quiteboring.renderlib.mixins",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "MixinTitleScreen"
+    "GuiGraphicsExtractorAccessor",
+    "GuiRendererAccessor",
+    "MixinGameRenderer",
+    "MixinGuiRenderer",
+    "MixinHud",
+    "MixinLevelRenderer",
+    "MixinShaders",
+    "PostChainAccessor",
+    "ShaderManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
   }
 }
-
